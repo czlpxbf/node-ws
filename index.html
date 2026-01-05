@@ -1,722 +1,368 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Network - Protect Earth</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    <title>诗海拾贝 - 古今中外名诗展示</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- 自定义配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        poetry: {
+                            red: '#c41e3a',
+                            blue: '#1e40af',
+                            green: '#166534',
+                            purple: '#7e22ce',
+                            gold: '#b45309',
+                        },
+                    },
+                    fontFamily: {
+                        chinese: ['"Ma Shan Zheng"', 'STKaiti', 'SimKai', 'serif'],
+                        foreign: ['"Playfair Display"', 'Georgia', 'serif'],
+                    },
+                    animation: {
+                        'text-glow': 'text-glow 3s ease-in-out infinite alternate',
+                        'fade-in': 'fadeIn 0.8s ease forwards',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        textGlow: {
+                            '0%': { textShadow: '0 0 5px #fff, 0 0 10px #fff' },
+                            '100%': { textShadow: '0 0 10px #fff, 0 0 20px #60a5fa, 0 0 30px #60a5fa' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    },
+                }
+            }
         }
-
-        :root {
-            --primary: #2e7d32;
-            --secondary: #4caf50;
-            --accent: #8bc34a;
-            --light: #e8f5e9;
-            --dark: #1b5e20;
-            --text: #333333;
-            --white: #ffffff;
+    </script>
+    
+    <!-- 自定义工具类和样式 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 文字渐变 */
+            .text-gradient {
+                @apply bg-clip-text text-transparent;
+            }
+            .text-gradient-red {
+                @apply bg-gradient-to-r from-poetry-red to-pink-600;
+            }
+            .text-gradient-blue {
+                @apply bg-gradient-to-r from-poetry-blue to-sky-500;
+            }
+            .text-gradient-green {
+                @apply bg-gradient-to-r from-poetry-green to-emerald-500;
+            }
+            .text-gradient-purple {
+                @apply bg-gradient-to-r from-poetry-purple to-violet-500;
+            }
+            .text-gradient-gold {
+                @apply bg-gradient-to-r from-poetry-gold to-amber-500;
+            }
+            
+            /* 卡片悬停效果 */
+            .poetry-card-hover {
+                @apply transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-purple-200/50;
+            }
+            
+            /* 滚动渐入动画触发类 */
+            .fade-in-trigger {
+                opacity: 0;
+                transform: translateY(20px);
+            }
         }
-
+        
+        /* 全局样式 */
         body {
-            background-color: var(--light);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .logo i {
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 2rem;
-        }
-
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        nav ul li a:hover {
-            color: var(--accent);
-        }
-
-        nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--white);
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--accent);
-            color: var(--white);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        section {
-            padding: 5rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent);
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            color: var(--text);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-img {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-img img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .about-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 2rem 1rem;
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .stat-item i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--text);
-        }
-
-        .initiatives {
-            background-color: var(--white);
-        }
-
-        .initiatives-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .initiative-card {
-            background-color: var(--light);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .initiative-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .initiative-img {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .initiative-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .initiative-card:hover .initiative-img img {
-            transform: scale(1.1);
-        }
-
-        .initiative-content {
-            padding: 1.5rem;
-        }
-
-        .initiative-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .initiative-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .cta {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            text-align: center;
-            padding: 5rem 0;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta .btn {
-            background-color: var(--white);
-            color: var(--primary);
-        }
-
-        .cta .btn:hover {
-            background-color: var(--accent);
-            color: var(--white);
-        }
-
-        footer {
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 3rem 0 1rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-column p {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links li a {
-            color: var(--light);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links li a:hover {
-            color: var(--accent);
-            padding-left: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-menu {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 992px) {
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: var(--primary);
-                flex-direction: column;
-                padding: 1rem 0;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            nav ul.active {
-                display: flex;
-            }
-            
-            nav ul li {
-                margin: 0;
-                padding: 0.8rem 0;
-            }
-            
-            .mobile-menu {
-                display: block;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animation for stats counter */
-        .counter {
-            transition: all 0.5s ease;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-attachment: fixed;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #7e22ce, #60a5fa);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
         }
     </style>
+    
+    <!-- 引入谷歌字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-seedling"></i>
-                <span>Green Network</span>
-            </div>
-            <nav>
-                <div class="mobile-menu">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#initiatives">Initiatives</a></li>
-                    <li><a href="#get-involved">Get Involved</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+<body class="text-white min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-purple-500/20">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-chinese font-bold text-gradient-purple animate-text-glow">
+                <i class="fa-solid fa-book-open-reader mr-2"></i>诗海拾贝
+            </a>
+            <ul class="flex gap-6">
+                <li><a href="#chinese" class="hover:text-purple-400 transition-colors font-chinese">中国古诗</a></li>
+                <li><a href="#foreign" class="hover:text-purple-400 transition-colors font-foreign">外国名诗</a></li>
+                <li><a href="#theme" class="hover:text-purple-400 transition-colors">按主题</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <header class="py-20 px-4 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-purple-900/30 to-transparent z-0"></div>
+        <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-chinese font-bold text-gradient-blue mb-6 animate-float z-10 relative">
+            古今中外 · 诗韵流长
+        </h1>
+        <p class="text-xl text-slate-300 max-w-2xl mx-auto font-foreign italic z-10 relative">
+            "诗是强烈感情的自然流露，它源于宁静中回忆起来的情感。" —— 华兹华斯
+        </p>
+        <div class="mt-10 animate-bounce">
+            <a href="#chinese" class="text-slate-400 hover:text-white">
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
+            </a>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container hero-content">
-            <h1>Protect Our Planet, Preserve Our Future</h1>
-            <p>Join the global movement to create a sustainable world through conservation, education, and community action.</p>
-            <a href="#get-involved" class="btn">Join Our Network</a>
-        </div>
-    </section>
+    <!-- 中国古诗板块 -->
+    <section id="chinese" class="py-16 px-4 container mx-auto">
+        <h2 class="text-3xl font-chinese font-bold text-gradient-red mb-12 text-center fade-in-trigger">
+            <i class="fa-solid fa-scroll mr-3"></i>中国古典诗词
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- 诗词卡片1 -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-poetry-red/20 poetry-card-hover fade-in-trigger">
+                <h3 class="text-2xl font-chinese text-gradient-red mb-3">静夜思</h3>
+                <p class="text-slate-400 mb-4 font-chinese">唐 · 李白</p>
+                <div class="poetry-content h-32 overflow-hidden transition-all duration-500">
+                    <p class="text-xl font-chinese leading-relaxed mb-2">床前明月光，</p>
+                    <p class="text-xl font-chinese leading-relaxed mb-2">疑是地上霜。</p>
+                    <p class="text-xl font-chinese leading-relaxed mb-2">举头望明月，</p>
+                    <p class="text-xl font-chinese leading-relaxed">低头思故乡。</p>
+                </div>
+                <button class="mt-4 text-purple-400 hover:text-purple-300 flex items-center gap-2 toggle-content">
+                    <i class="fa-solid fa-chevron-down"></i> 展开赏析
+                </button>
+                <div class="mt-4 text-slate-400 text-sm hidden赏析-content">
+                    <p>这首诗语言凝练，感情真挚。描写了在寂静的夜晚，诗人仰望窗外的明月，思念家乡和亲人的情形，是千古传诵的思乡名篇。</p>
+                </div>
+            </div>
 
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>About Green Network</h2>
-                <p>We are a global community dedicated to environmental protection and sustainable development.</p>
-            </div>
-            <div class="about-content">
-                <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Team planting trees">
+            <!-- 诗词卡片2 -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-poetry-blue/20 poetry-card-hover fade-in-trigger">
+                <h3 class="text-2xl font-chinese text-gradient-blue mb-3">水调歌头·明月几时有</h3>
+                <p class="text-slate-400 mb-4 font-chinese">宋 · 苏轼</p>
+                <div class="poetry-content h-32 overflow-hidden transition-all duration-500">
+                    <p class="text-xl font-chinese leading-relaxed mb-2">明月几时有？把酒问青天。</p>
+                    <p class="text-xl font-chinese leading-relaxed mb-2">不知天上宫阙，今夕是何年。</p>
+                    <p class="text-xl font-chinese leading-relaxed mb-2">我欲乘风归去，又恐琼楼玉宇，</p>
+                    <p class="text-xl font-chinese leading-relaxed">高处不胜寒。</p>
                 </div>
-                <div class="about-text">
-                    <h3>Our Mission</h3>
-                    <p>Green Network is committed to creating a sustainable future by protecting natural ecosystems, promoting renewable energy, and empowering communities to take environmental action.</p>
-                    <p>Founded in 2010, we've grown from a small grassroots organization to an international network with over 50,000 members across 120 countries.</p>
-                    <p>Our approach combines scientific research, community engagement, and policy advocacy to address the most pressing environmental challenges of our time.</p>
-                    <a href="#" class="btn">Learn More</a>
+                <button class="mt-4 text-purple-400 hover:text-purple-300 flex items-center gap-2 toggle-content">
+                    <i class="fa-solid fa-chevron-down"></i> 展开赏析
+                </button>
+                <div class="mt-4 text-slate-400 text-sm hidden赏析-content">
+                    <p>此词是中秋望月怀人之作，表达了对胞弟苏辙的无限思念。词人运用形象描绘手法，勾勒出一种皓月当空、亲人千里、孤高旷远的境界氛围，反衬自己遣世独立的意绪和往昔的神话传说融合一处。</p>
                 </div>
             </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <i class="fas fa-tree"></i>
-                    <h3 class="counter" data-target="2500000">0</h3>
-                    <p>Trees Planted</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="50000">0</h3>
-                    <p>Active Members</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-globe-americas"></i>
-                    <h3 class="counter" data-target="120">0</h3>
-                    <p>Countries Reached</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-recycle"></i>
-                    <h3 class="counter" data-target="1500">0</h3>
-                    <p>Cleanup Projects</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Initiatives Section -->
-    <section class="initiatives" id="initiatives">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Initiatives</h2>
-                <p>Discover the key programs and projects we're implementing to protect our planet.</p>
-            </div>
-            <div class="initiatives-grid">
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://dialogue.earth/content/uploads/2021/04/lessons-from-the-rush-to-reforest-china-dialogue-2400x1599.jpg" alt="Reforestation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Global Reforestation</h3>
-                        <p>Planting millions of trees worldwide to restore ecosystems, combat climate change, and protect biodiversity.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
+            <!-- 诗词卡片3 -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-poetry-green/20 poetry-card-hover fade-in-trigger">
+                <h3 class="text-2xl font-chinese text-gradient-green mb-3">登鹳雀楼</h3>
+                <p class="text-slate-400 mb-4 font-chinese">唐 · 王之涣</p>
+                <div class="poetry-content h-32 overflow-hidden transition-all duration-500">
+                    <p class="text-xl font-chinese leading-relaxed mb-2">白日依山尽，</p>
+                    <p class="text-xl font-chinese leading-relaxed mb-2">黄河入海流。</p>
+                    <p class="text-xl font-chinese leading-relaxed mb-2">欲穷千里目，</p>
+                    <p class="text-xl font-chinese leading-relaxed">更上一层楼。</p>
                 </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1621451537084-482c73073a0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Ocean Conservation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Ocean Conservation</h3>
-                        <p>Protecting marine ecosystems, reducing plastic pollution, and promoting sustainable fishing practices.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Renewable Energy">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Renewable Energy</h3>
-                        <p>Promoting solar, wind, and other clean energy sources to reduce dependence on fossil fuels.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
+                <button class="mt-4 text-purple-400 hover:text-purple-300 flex items-center gap-2 toggle-content">
+                    <i class="fa-solid fa-chevron-down"></i> 展开赏析
+                </button>
+                <div class="mt-4 text-slate-400 text-sm hidden赏析-content">
+                    <p>这首诗前两句写的是自然景色，但开笔就有缩万里于咫尺，使咫尺有万里之势；后两句写意，写的出人意料，把哲理与景物、情势溶化得天衣无缝，成为鹳雀楼上一首不朽的绝唱。</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta" id="get-involved">
-        <div class="container">
-            <h2>Join Our Global Movement</h2>
-            <p>Together, we can create a sustainable future for generations to come. Every action counts, no matter how small.</p>
-            <a href="#" class="btn">Become a Member</a>
+    <!-- 外国名诗板块 -->
+    <section id="foreign" class="py-16 px-4 container mx-auto">
+        <h2 class="text-3xl font-foreign font-bold text-gradient-purple mb-12 text-center fade-in-trigger">
+            <i class="fa-solid fa-globe mr-3"></i>Foreign Famous Poems
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- 外国诗词卡片1 -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-poetry-purple/20 poetry-card-hover fade-in-trigger">
+                <h3 class="text-2xl font-foreign text-gradient-purple mb-3">When You Are Old</h3>
+                <p class="text-slate-400 mb-4 font-foreign">William Butler Yeats</p>
+                <div class="poetry-content h-48 overflow-hidden transition-all duration-500">
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">When you are old and grey and full of sleep,</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">And nodding by the fire, take down this book,</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">And slowly read, and dream of the soft look</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">Your eyes had once, and of their shadows deep;</p>
+                    <p class="text-lg font-foreign italic leading-relaxed">How many loved your moments of glad grace,</p>
+                </div>
+                <button class="mt-4 text-purple-400 hover:text-purple-300 flex items-center gap-2 toggle-content">
+                    <i class="fa-solid fa-chevron-down"></i> Expand Appreciation
+                </button>
+                <div class="mt-4 text-slate-400 text-sm hidden赏析-content">
+                    <p class="mb-2">《当你老了》是叶芝献给友人茅德·冈的爱情诗，诗歌采用对比手法，既写出了诗人对爱人的深情，也表达了对时光流逝、爱情本质的思考，语言优美，情感真挚。</p>
+                    <p class="font-foreign italic">（中文译文）：当你老了，头发花白，睡意沉沉，倦坐在炉边，取下这本书来，慢慢读着，追梦当年的眼神，那柔美的神采与深幽的晕影。多少人爱过你青春的片影，爱过你的美貌，以虚伪或是真情。</p>
+                </div>
+            </div>
+
+            <!-- 外国诗词卡片2 -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-poetry-gold/20 poetry-card-hover fade-in-trigger">
+                <h3 class="text-2xl font-foreign text-gradient-gold mb-3">The Road Not Taken</h3>
+                <p class="text-slate-400 mb-4 font-foreign">Robert Frost</p>
+                <div class="poetry-content h-48 overflow-hidden transition-all duration-500">
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">Two roads diverged in a yellow wood,</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">And sorry I could not travel both</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">And be one traveler, long I stood</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">And looked down one as far as I could</p>
+                    <p class="text-lg font-foreign italic leading-relaxed">To where it bent in the undergrowth;</p>
+                </div>
+                <button class="mt-4 text-purple-400 hover:text-purple-300 flex items-center gap-2 toggle-content">
+                    <i class="fa-solid fa-chevron-down"></i> Expand Appreciation
+                </button>
+                <div class="mt-4 text-slate-400 text-sm hidden赏析-content">
+                    <p class="mb-2">《未选择的路》是弗罗斯特的代表作之一，诗歌以林中岔路为喻，探讨了人生选择的主题。诗人通过描述自己选择了一条人迹更少的路，暗示了对独立人格和人生抉择的思考，充满了哲理意味。</p>
+                    <p class="font-foreign italic">（中文译文）：黄色的树林里分出两条路，可惜我不能同时去涉足，我在那路口久久伫立，我向着一条路极目望去，直到它消失在丛林深处。</p>
+                </div>
+            </div>
+
+            <!-- 外国诗词卡片3 -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-poetry-blue/20 poetry-card-hover fade-in-trigger">
+                <h3 class="text-2xl font-foreign text-gradient-blue mb-3">If</h3>
+                <p class="text-slate-400 mb-4 font-foreign">Rudyard Kipling</p>
+                <div class="poetry-content h-48 overflow-hidden transition-all duration-500">
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">If you can keep your head when all about you</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">Are losing theirs and blaming it on you,</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">If you can trust yourself when all men doubt you,</p>
+                    <p class="text-lg font-foreign italic leading-relaxed mb-2">But make allowance for their doubting too;</p>
+                    <p class="text-lg font-foreign italic leading-relaxed">If you can wait and not be tired by waiting,</p>
+                </div>
+                <button class="mt-4 text-purple-400 hover:text-purple-300 flex items-center gap-2 toggle-content">
+                    <i class="fa-solid fa-chevron-down"></i> Expand Appreciation
+                </button>
+                <div class="mt-4 text-slate-400 text-sm hidden赏析-content">
+                    <p class="mb-2">《如果》是吉卜林写给儿子的励志诗，全诗以"If"开头，层层递进地阐述了成为一个真正的人的品质：冷静、自信、耐心、勇敢、宽容等。诗歌语言质朴却充满力量，是流传甚广的励志经典。</p>
+                    <p class="font-foreign italic">（中文译文）：如果所有人都失去理智，咒骂你，你仍能保持头脑清醒；如果所有人都怀疑你，你仍能坚信自己，让所有的怀疑动摇；如果你等待，不因等待而疲倦。</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Green Network</h3>
-                    <p>We are dedicated to protecting our planet through collaborative action, education, and sustainable solutions.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#initiatives">Initiatives</a></li>
-                        <li><a href="#get-involved">Get Involved</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Our Programs</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Reforestation</a></li>
-                        <li><a href="#">Ocean Cleanup</a></li>
-                        <li><a href="#">Wildlife Protection</a></li>
-                        <li><a href="#">Climate Education</a></li>
-                        <li><a href="#">Sustainable Agriculture</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact Us</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Copper Creek Drive, New York</p>
-                    <p><i class="fas fa-phone"></i> +1 (312) 171-0771</p>
-                    <p><i class="fas fa-envelope"></i> support@greennetwork.org</p>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Network. All rights reserved.</p>
-            </div>
+    <!-- 主题分类板块 -->
+    <section id="theme" class="py-16 px-4 container mx-auto mb-16">
+        <h2 class="text-3xl font-chinese font-bold text-gradient-gold mb-12 text-center fade-in-trigger">
+            <i class="fa-solid fa-tags mr-3"></i>按主题分类
+        </h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 fade-in-trigger">
+            <!-- 主题标签 -->
+            <a href="#" class="bg-gradient-to-br from-poetry-red/20 to-poetry-red/5 rounded-lg py-6 text-center hover:from-poetry-red/30 hover:to-poetry-red/10 transition-all duration-300">
+                <i class="fa-solid fa-moon text-3xl mb-3 text-poetry-red"></i>
+                <h3 class="font-chinese text-lg">思乡</h3>
+            </a>
+            <a href="#" class="bg-gradient-to-br from-poetry-blue/20 to-poetry-blue/5 rounded-lg py-6 text-center hover:from-poetry-blue/30 hover:to-poetry-blue/10 transition-all duration-300">
+                <i class="fa-solid fa-heart text-3xl mb-3 text-poetry-blue"></i>
+                <h3 class="font-chinese text-lg">爱情</h3>
+            </a>
+            <a href="#" class="bg-gradient-to-br from-poetry-green/20 to-poetry-green/5 rounded-lg py-6 text-center hover:from-poetry-green/30 hover:to-poetry-green/10 transition-all duration-300">
+                <i class="fa-solid fa-mountain-sun text-3xl mb-3 text-poetry-green"></i>
+                <h3 class="font-chinese text-lg">山水</h3>
+            </a>
+            <a href="#" class="bg-gradient-to-br from-poetry-purple/20 to-poetry-purple/5 rounded-lg py-6 text-center hover:from-poetry-purple/30 hover:to-poetry-purple/10 transition-all duration-300">
+                <i class="fa-solid fa-feather-pointed text-3xl mb-3 text-poetry-purple"></i>
+                <h3 class="font-chinese text-lg">哲理</h3>
+            </a>
         </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-slate-900 border-t border-purple-500/20 py-8 px-4 text-center">
+        <p class="text-slate-400 font-chinese">诗海拾贝 · 感受文字的力量</p>
+        <p class="text-slate-500 text-sm mt-2">© 2026 古今中外名诗展示 | 纯静态无图片设计</p>
     </footer>
 
+    <!-- 交互脚本 -->
     <script>
-        // Mobile Menu Toggle
-        document.querySelector('.mobile-menu').addEventListener('click', function() {
-            document.querySelector('nav ul').classList.toggle('active');
-        });
-
-        // Counter Animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter');
-            const speed = 200; // The lower the slower
+        // 滚动渐入动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始触发一次可见元素的动画
+            checkFadeInElements();
             
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
+            // 滚动时检测元素是否可见
+            window.addEventListener('scroll', checkFadeInElements);
+            
+            // 展开/收起赏析内容
+            const toggleButtons = document.querySelectorAll('.toggle-content');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.poetry-card-hover');
+                    const content = card.querySelector('.poetry-content');
+                    const appreciation = card.querySelector('.赏析-content');
+                    const icon = this.querySelector('i');
+                    
+                    // 切换展开/收起状态
+                    content.classList.toggle('h-auto');
+                    appreciation.classList.toggle('hidden');
+                    
+                    // 切换图标和文字
+                    if (content.classList.contains('h-auto')) {
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                        this.innerHTML = '<i class="fa-solid fa-chevron-up"></i> 收起赏析';
+                    } else {
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                        this.innerHTML = '<i class="fa-solid fa-chevron-down"></i> 展开赏析';
+                        // 恢复高度（区分中外诗词不同高度）
+                        if (card.closest('#foreign')) {
+                            content.classList.add('h-48');
+                        } else {
+                            content.classList.add('h-32');
+                        }
+                    }
+                });
+            });
+        });
+        
+        // 检测元素是否在可视区域
+        function checkFadeInElements() {
+            const elements = document.querySelectorAll('.fade-in-trigger');
+            elements.forEach(element => {
+                const rect = element.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight - 100 && rect.bottom > 0;
                 
-                const inc = target / speed;
-                
-                if(count < target) {
-                    counter.innerText = Math.ceil(count + inc);
-                    setTimeout(animateCounters, 1);
-                } else {
-                    counter.innerText = target;
+                if (isVisible) {
+                    element.classList.add('animate-fade-in');
+                    element.classList.remove('fade-in-trigger');
                 }
             });
         }
-
-        // Initialize counters when page loads
-        window.addEventListener('load', animateCounters);
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    document.querySelector('nav ul').classList.remove('active');
-                }
-            });
-        });
     </script>
 </body>
-
 </html>
